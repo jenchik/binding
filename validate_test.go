@@ -212,9 +212,9 @@ func performValidationTest(t *testing.T, testCase validationTestCase) {
 	httpRecorder := httptest.NewRecorder()
 	m := martini.Classic()
 
-	m.Post(testRoute, Validate(testCase.data), func(actual Errors) {
+	m.Post(testRoute, Validate(testCase.data), func(actual *Errors) {
 		expString := fmt.Sprintf("%+v", testCase.expectedErrors)
-		actString := fmt.Sprintf("%+v", actual)
+		actString := fmt.Sprintf("%+v", *actual)
 		if actString != expString {
 			t.Errorf("For '%s': expected errors to be\n'%s'\nbut got\n'%s'",
 				testCase.description, expString, actString)

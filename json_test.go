@@ -131,49 +131,49 @@ func performJsonTest(t *testing.T, binder handlerFunc, testCase jsonTestCase) {
 	switch testCase.expected.(type) {
 	case []Post:
 		if testCase.withInterface {
-			m.Post(testRoute, binder([]Post{}, (*modeler)(nil)), func(actual []Post, iface modeler, errs Errors) {
+			m.Post(testRoute, binder([]Post{}, (*modeler)(nil)), func(actual *([]Post), iface modeler, errs *Errors) {
 
-				for _, a := range actual {
+				for _, a := range *actual {
 					if a.Title != iface.Model() {
 						t.Errorf("For '%s': expected the struct to be mapped to the context as an interface",
 							testCase.description)
 					}
-					jsonTestHandler(a, errs)
+					jsonTestHandler(a, *errs)
 				}
 			})
 		} else {
-			m.Post(testRoute, binder([]Post{}), func(actual []Post, errs Errors) {
-				jsonTestHandler(actual, errs)
+			m.Post(testRoute, binder([]Post{}), func(actual *([]Post), errs *Errors) {
+				jsonTestHandler(*actual, *errs)
 			})
 		}
 
 	case Post:
 		if testCase.withInterface {
-			m.Post(testRoute, binder(Post{}, (*modeler)(nil)), func(actual Post, iface modeler, errs Errors) {
+			m.Post(testRoute, binder(Post{}, (*modeler)(nil)), func(actual *Post, iface modeler, errs *Errors) {
 				if actual.Title != iface.Model() {
 					t.Errorf("For '%s': expected the struct to be mapped to the context as an interface",
 						testCase.description)
 				}
-				jsonTestHandler(actual, errs)
+				jsonTestHandler(*actual, *errs)
 			})
 		} else {
-			m.Post(testRoute, binder(Post{}), func(actual Post, errs Errors) {
-				jsonTestHandler(actual, errs)
+			m.Post(testRoute, binder(Post{}), func(actual *Post, errs *Errors) {
+				jsonTestHandler(*actual, *errs)
 			})
 		}
 
 	case BlogPost:
 		if testCase.withInterface {
-			m.Post(testRoute, binder(BlogPost{}, (*modeler)(nil)), func(actual BlogPost, iface modeler, errs Errors) {
+			m.Post(testRoute, binder(BlogPost{}, (*modeler)(nil)), func(actual *BlogPost, iface modeler, errs *Errors) {
 				if actual.Title != iface.Model() {
 					t.Errorf("For '%s': expected the struct to be mapped to the context as an interface",
 						testCase.description)
 				}
-				jsonTestHandler(actual, errs)
+				jsonTestHandler(*actual, *errs)
 			})
 		} else {
-			m.Post(testRoute, binder(BlogPost{}), func(actual BlogPost, errs Errors) {
-				jsonTestHandler(actual, errs)
+			m.Post(testRoute, binder(BlogPost{}), func(actual *BlogPost, errs *Errors) {
+				jsonTestHandler(*actual, *errs)
 			})
 		}
 	}

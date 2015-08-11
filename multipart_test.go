@@ -66,15 +66,15 @@ func performMultipartFormTest(t *testing.T, binder handlerFunc, testCase multipa
 	httpRecorder := httptest.NewRecorder()
 	m := martini.Classic()
 
-	m.Post(testRoute, binder(BlogPost{}), func(actual BlogPost, errs Errors) {
-		if testCase.shouldSucceed && len(errs) > 0 {
+	m.Post(testRoute, binder(BlogPost{}), func(actual *BlogPost, errs *Errors) {
+		if testCase.shouldSucceed && len(*errs) > 0 {
 			t.Errorf("'%s' should have succeeded, but there were errors (%d):\n%+v",
-				testCase.description, len(errs), errs)
-		} else if !testCase.shouldSucceed && len(errs) == 0 {
+				testCase.description, len(*errs), *errs)
+		} else if !testCase.shouldSucceed && len(*errs) == 0 {
 			t.Errorf("'%s' should not have succeeded, but it did (there were no errors)", testCase.description)
 		}
 		expString := fmt.Sprintf("%+v", testCase.inputAndExpected)
-		actString := fmt.Sprintf("%+v", actual)
+		actString := fmt.Sprintf("%+v", *actual)
 		if actString != expString {
 			t.Errorf("'%s': expected\n'%s'\nbut got\n'%s'",
 				testCase.description, expString, actString)

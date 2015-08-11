@@ -76,8 +76,8 @@ func performFileTest(t *testing.T, binder handlerFunc, testCase fileTestCase) {
 		}
 	}
 
-	m.Post(testRoute, binder(BlogPost{}), func(actual BlogPost, errs Errors) {
-		fileTestHandler(actual, errs)
+	m.Post(testRoute, binder(BlogPost{}), func(actual *BlogPost, errs *Errors) {
+		fileTestHandler(*actual, *errs)
 	})
 
 	m.ServeHTTP(httpRecorder, buildRequestWithFile(testCase))

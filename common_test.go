@@ -56,15 +56,10 @@ type (
 	}
 )
 
-func (p Post) Validate(errs Errors, req *http.Request) Errors {
+func (p Post) Validate(errs *Errors, req *http.Request) {
 	if len(p.Title) < 10 {
-		errs = append(errs, Error{
-			FieldNames:     []string{"title"},
-			Classification: "LengthError",
-			Message:        "Life is too short",
-		})
+        errs.Add([]string{"title"}, "LengthError", "Life is too short")
 	}
-	return errs
 }
 
 func (p Post) Model() string {

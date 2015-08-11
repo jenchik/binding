@@ -174,7 +174,14 @@ func Json(jsonStruct interface{}, ifacePtr ...interface{}) martini.Handler {
 // is executed, and its errors are mapped to the context. This middleware
 // performs no error handling: it merely detects errors and maps them.
 func Validate(obj interface{}) martini.Handler {
-	return func(context martini.Context, req *http.Request, errors *Errors) {
+	return func(context martini.Context, req *http.Request) {
+        var errors *Errors
+        if val := context.Get(reflect.TypeOf(errors)); val.IsValid() {
+            errors = val.Interface().(*Errors)
+        } else {
+            errors = &Errors{}
+            context.Map(errors)
+        }
 		v := reflect.ValueOf(obj)
 		k := v.Kind()
 

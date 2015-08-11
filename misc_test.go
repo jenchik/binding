@@ -43,8 +43,8 @@ func TestSetWithProperType(t *testing.T) {
 		httpRecorder := httptest.NewRecorder()
 		m := martini.Classic()
 
-		m.Post(testRoute, Form(Everything{}), func(actual Everything, errs Errors) {
-			actualStr := fmt.Sprintf("%+v", actual)
+		m.Post(testRoute, Form(Everything{}), func(actual *Everything, errs *Errors) {
+			actualStr := fmt.Sprintf("%+v", *actual)
 			expectedStr := fmt.Sprintf("%+v", expectedOutputs[key])
 			if actualStr != expectedStr {
 				t.Errorf("For '%s' expected\n%s but got\n%s", key, expectedStr, actualStr)

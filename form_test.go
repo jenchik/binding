@@ -136,7 +136,8 @@ func performFormTest(t *testing.T, binder handlerFunc, testCase formTestCase) {
 	httpRecorder := httptest.NewRecorder()
 	m := martini.Classic()
 
-	formTestHandler := func(actual interface{}, errs Errors) {
+	formTestHandler := func(actual interface{}, errsPtr *Errors) {
+        errs := *errsPtr
 		if testCase.shouldSucceed && len(errs) > 0 {
 			t.Errorf("'%s' should have succeeded, but there were errors (%d):\n%+v",
 				testCase.description, len(errs), errs)
@@ -154,43 +155,43 @@ func performFormTest(t *testing.T, binder handlerFunc, testCase formTestCase) {
 	switch testCase.expected.(type) {
 	case Post:
 		if testCase.withInterface {
-			m.Post(testRoute, binder(Post{}, (*modeler)(nil)), func(actual Post, iface modeler, errs Errors) {
+			m.Post(testRoute, binder(Post{}, (*modeler)(nil)), func(actual *Post, iface modeler, errs *Errors) {
 				if actual.Title != iface.Model() {
 					t.Errorf("For '%s': expected the struct to be mapped to the context as an interface",
 						testCase.description)
 				}
-				formTestHandler(actual, errs)
+				formTestHandler(*actual, errs)
 			})
 		} else {
-			m.Post(testRoute, binder(Post{}), func(actual Post, errs Errors) {
-				formTestHandler(actual, errs)
+			m.Post(testRoute, binder(Post{}), func(actual *Post, errs *Errors) {
+				formTestHandler(*actual, errs)
 			})
-			m.Get(testRoute, binder(Post{}), func(actual Post, errs Errors) {
-				formTestHandler(actual, errs)
+			m.Get(testRoute, binder(Post{}), func(actual *Post, errs *Errors) {
+				formTestHandler(*actual, errs)
 			})
 		}
 
 	case BlogPost:
 		if testCase.withInterface {
-			m.Post(testRoute, binder(BlogPost{}, (*modeler)(nil)), func(actual BlogPost, iface modeler, errs Errors) {
+			m.Post(testRoute, binder(BlogPost{}, (*modeler)(nil)), func(actual *BlogPost, iface modeler, errs *Errors) {
 				if actual.Title != iface.Model() {
 					t.Errorf("For '%s': expected the struct to be mapped to the context as an interface",
 						testCase.description)
 				}
-				formTestHandler(actual, errs)
+				formTestHandler(*actual, errs)
 			})
 		} else {
-			m.Post(testRoute, binder(BlogPost{}), func(actual BlogPost, errs Errors) {
-				formTestHandler(actual, errs)
+			m.Post(testRoute, binder(BlogPost{}), func(actual *BlogPost, errs *Errors) {
+				formTestHandler(*actual, errs)
 			})
 		}
 
 	case EmbedPerson:
-		m.Post(testRoute, binder(EmbedPerson{}), func(actual EmbedPerson, errs Errors) {
-			formTestHandler(actual, errs)
+		m.Post(testRoute, binder(EmbedPerson{}), func(actual *EmbedPerson, errs *Errors) {
+			formTestHandler(*actual, errs)
 		})
-		m.Get(testRoute, binder(EmbedPerson{}), func(actual EmbedPerson, errs Errors) {
-			formTestHandler(actual, errs)
+		m.Get(testRoute, binder(EmbedPerson{}), func(actual *EmbedPerson, errs *Errors) {
+			formTestHandler(*actual, errs)
 		})
 	}
 
